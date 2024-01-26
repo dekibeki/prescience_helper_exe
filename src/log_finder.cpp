@@ -16,34 +16,42 @@ void prescience_helper::Log_finder::set_log_read(std::filesystem::path path, std
 }
 
 void prescience_helper::Log_finder::check(std::vector<Log>& returning) {
-  for (auto const& dir_entry : std::filesystem::directory_iterator{ base_ }) {
+  if (!std::filesystem::exists(base_) || !std::filesystem::is_directory(base_)) {
+    return;
+  }
+  try {
+    for (auto const& dir_entry : std::filesystem::directory_iterator{ base_ }) {
 
-    if (!dir_entry.is_regular_file() || !dir_entry.path().has_filename()) {
-      continue;
-    }
+      if (!dir_entry.is_regular_file() || !dir_entry.path().has_filename()) {
+        continue;
+      }
 
-    if (!dir_entry.path().filename().string().starts_with("WoWCombatLog-")) {
-      continue;
-    }
+      if (!dir_entry.path().filename().string().starts_with("WoWCombatLog-")) {
+        continue;
+      }
 
-    const auto file_size = dir_entry.file_size();
-    const auto found = cache_.find(dir_entry.path());
+      const auto file_size = dir_entry.file_size();
+      const auto found = cache_.find(dir_entry.path());
 
-    if (found == cache_.end()) {
-      cache_.emplace(dir_entry.path(), file_size);
-      returning.push_back({
-        dir_entry.path(),
-        0,
-        file_size});
-    } else {
-      if (found->second < file_size) {
+      if (found == cache_.end()) {
+        cache_.emplace(dir_entry.path(), file_size);
         returning.push_back({
-          found->first,
-          found->second,
-          file_size});
-        found->second = file_size;
+          dir_entry.path(),
+          0,
+          file_size });
+      } else {
+        if (found->second < file_size) {
+          returning.push_back({
+            found->first,
+            found->second,
+            file_size });
+          found->second = file_size;
+        }
       }
     }
+  }
+  catch (...) {
+    return;
   }
 }
 
