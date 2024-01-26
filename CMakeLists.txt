@@ -1,4 +1,8 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.15)
+
+if(POLICY CMP0091)
+  cmake_policy(SET CMP0091 NEW) 
+endif()
 
 project(prescience_helper CXX)
 
@@ -26,10 +30,6 @@ target_link_libraries(prescience_helper_lib PUBLIC
 target_compile_features(prescience_helper_lib PUBLIC
   cxx_std_20)
 
-IF(${VCPKG_TARGET_TRIPLET} MATCHES ".*-static")
-  set_property(TARGET prescience_helper_lib PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-ENDIF()
-
 add_executable(prescience_helper WIN32
   "src/exe.cpp")
 
@@ -37,6 +37,8 @@ target_link_libraries(prescience_helper PRIVATE
   prescience_helper_lib
   wx::core wx::base
   unofficial::sqlite3::sqlite3)
+
 IF(${VCPKG_TARGET_TRIPLET} MATCHES ".*-static")
-  set_property(TARGET prescience_helper_embedded PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  set_property(TARGET prescience_helper_lib PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  set_property(TARGET prescience_helper PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 ENDIF()
