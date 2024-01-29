@@ -18,8 +18,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(clogparser)
 
 add_library(prescience_helper_lib STATIC
-  "src/ingest.cpp"
-  "src/log_finder.cpp")
+  "src/prescience_helper_lib/ingest.cpp"
+  "src/prescience_helper_lib/log_finder.cpp")
 
 target_include_directories(prescience_helper_lib PUBLIC
   "include_public")
@@ -31,7 +31,8 @@ target_compile_features(prescience_helper_lib PUBLIC
   cxx_std_20)
 
 add_executable(prescience_helper WIN32
-  "src/exe.cpp")
+  "src/prescience_helper/exe.cpp"
+  "src/prescience_helper/sqlite3_wrapper.cpp")
 
 target_link_libraries(prescience_helper PRIVATE
   prescience_helper_lib

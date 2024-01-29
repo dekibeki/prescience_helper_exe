@@ -16,6 +16,10 @@ namespace prescience_helper {
 
     void change_path(std::filesystem::path);
 
+    std::filesystem::path const& path() const noexcept {
+      return base_;
+    }
+
     void check(std::vector<Log>& returning);
     std::vector<Log> check();
   private:
