@@ -1,6 +1,6 @@
-#Prescience Helper
+# Prescience Helper
 
-##Info
+## Info
 
 This is designed to help you prescience the best people you can!
 
@@ -8,7 +8,7 @@ This is the software component of [this addon](https://www.curseforge.com/wow/ad
 
 It generates the input strings for the addon by parsing and keeping a database of all logs on your computer. This means you'll have to log your own fights.
 
-##UI
+## UI
 
 ![the ui](https://github.com/dekibeki/prescience_helper_exe/blob/main/doc/prescience_helper_ui.png?raw=true)
 
@@ -24,7 +24,7 @@ The UI may start smaller than necessary to show all controls, please resize it s
 8. This gives information about the current input generation. This can include information on errors and when it succeeded.
 9. This gives information about the current parse. This will include when it is parsing and when it has finished parsing something.
 
-##Basic idea behind the software
+## Basic idea behind the software
 
 This software will constantly scan your logs directory for new logs, and put them into the database "prescience_helper.db" which will be placed in the working directory (generally the same directory as the software).
 Then when given an addon output string and what fight you're doing, it will look through all of those logs and find the people doing the most damage at each point of time.
