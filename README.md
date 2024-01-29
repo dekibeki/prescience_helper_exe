@@ -6,6 +6,8 @@ This is designed to help you prescience the best people you can!
 
 This is the software component of [this addon](https://www.curseforge.com/wow/addons/prescience-helper).
 
+There are prebuilt binaries in the releases to the right if you can't/don't want to build it yourself.
+
 It generates the input strings for the addon by parsing and keeping a database of all logs on your computer. This means you'll have to log your own fights.
 
 ## UI
