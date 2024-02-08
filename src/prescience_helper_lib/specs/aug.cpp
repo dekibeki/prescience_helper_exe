@@ -1,31 +1,31 @@
-#include <prescience_helper_lib/specs/aug.hpp>
-#include <prescience_helper_lib/spells.hpp>
+#include <prescience_helper/sim/specs/aug.hpp>
+#include <prescience_helper/sim/spells.hpp>
 
-namespace internal = prescience_helper_lib::internal;
+namespace sim = prescience_helper::sim;
 
 namespace {
-  const internal::Player_scaling aug_class_block{
+  const sim::Player_scaling aug_class_block{
     clogparser::Attribute_rating::intelligence,
     1, 0,
   };
-  const internal::Combat_stats base_stats{
+  const sim::Combat_stats base_stats{
     0, 0,
     8, 0.05, 0, 0
   };
 
-  double living_flame_impact(prescience_helper_lib::internal::Combat_stats const& stats) {
-    return stats[internal::Combat_stat::spell_power] * 1.61;
+  double living_flame_impact(sim::Combat_stats const& stats) {
+    return stats[sim::Combat_stat::spell_power] * 1.61;
   }
 
-  double eruption_impact(prescience_helper_lib::internal::Combat_stats const& stats) {
-    return stats[internal::Combat_stat::spell_power] * 2.8;
+  double eruption_impact(sim::Combat_stats const& stats) {
+    return stats[sim::Combat_stat::spell_power] * 2.8;
   }
 
-  struct Aug_player_state final : public internal::Player_state {
+  struct Aug_player_state final : public sim::Player_state {
     Aug_player_state(clogparser::events::Combatant_info const& c_info) :
       Player_state(c_info, aug_class_block) {
 
-      for (internal::Combat_stat i = internal::Combat_stat::INITIAL; i < internal::Combat_stat::COUNT; ++i) {
+      for (sim::Combat_stat i = sim::Combat_stat::INITIAL; i < sim::Combat_stat::COUNT; ++i) {
         current_stats[i] += base_stats[i];
       }
 
@@ -37,17 +37,17 @@ namespace {
       }
     }
 
-    internal::Spell_result impact(std::uint64_t spell_id, bool crit, Player_state const& aug, internal::Target_state const& target) const override {
+    sim::Spell_result impact(std::uint64_t spell_id, bool crit, Player_state const& aug, sim::Target_state const& target) const override {
       switch (spell_id) {
-      case 361469: return internal::calc_spell(crit, aug, *this, target, scaling.living_flame);
-      case 395160: return internal::calc_spell(crit, aug, *this, target, scaling.eruption);
-      case 396286: return internal::calc_spell(crit, aug, *this, target, scaling.upheaval);
-      default: return internal::unknown_spell();
+      case 361469: return sim::calc_spell(crit, aug, *this, target, scaling.living_flame);
+      case 395160: return sim::calc_spell(crit, aug, *this, target, scaling.eruption);
+      case 396286: return sim::calc_spell(crit, aug, *this, target, scaling.upheaval);
+      default: return sim::unknown_spell();
       }
     }
-    internal::Spell_result tick(std::uint64_t spell_id, bool crit, Player_state const& aug, internal::Target_state const& target) const override {
+    sim::Spell_result tick(std::uint64_t spell_id, bool crit, Player_state const& aug, sim::Target_state const& target) const override {
       switch (spell_id) {
-      default: return internal::unknown_spell();
+      default: return sim::unknown_spell();
       }
     }
 
@@ -89,13 +89,13 @@ namespace {
     }
 
     struct {
-      internal::Spell_scaling living_flame{ 0,1.61 };
-      internal::Spell_scaling eruption{ 0,2.8 };
-      internal::Spell_scaling upheaval{ 0,4.3 };
+      sim::Spell_scaling living_flame{ 0,1.61 };
+      sim::Spell_scaling eruption{ 0,2.8 };
+      sim::Spell_scaling upheaval{ 0,4.3 };
     } scaling;
   };
 }
 
-std::unique_ptr<internal::Player_state> internal::specs::create_aug(clogparser::events::Combatant_info const& c_info) {
+std::unique_ptr<sim::Player_state> sim::specs::create_aug(clogparser::events::Combatant_info const& c_info) {
   return std::make_unique<Aug_player_state>(c_info);
 }

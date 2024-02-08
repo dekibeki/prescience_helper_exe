@@ -9,17 +9,28 @@ project(prescience_helper CXX)
 find_package(wxWidgets CONFIG REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 
-include(FetchContent)
-FetchContent_Declare(
-  clogparser
-  GIT_REPOSITORY "https://github.com/dekibeki/clogparser.git"
-  GIT_TAG "main")
+find_package(clogparser)
 
-FetchContent_MakeAvailable(clogparser)
+if(NOT ${clogparser_FOUND})
+  include(FetchContent)
+  FetchContent_Declare(
+    clogparser
+    GIT_REPOSITORY "https://github.com/dekibeki/clogparser.git"
+    GIT_TAG "main")
+
+  FetchContent_MakeAvailable(clogparser)
+endif()
 
 add_library(prescience_helper_lib STATIC
   "src/prescience_helper_lib/ingest.cpp"
-  "src/prescience_helper_lib/log_finder.cpp")
+  "src/prescience_helper_lib/log_finder.cpp"
+  "src/prescience_helper_lib/sim.cpp"
+  "src/prescience_helper_lib/spells.cpp" 
+  "src/prescience_helper_lib/dbc_constants.cpp"
+  "src/prescience_helper_lib/specs/aug.cpp")
+
+target_include_directories(prescience_helper_lib PRIVATE
+  "include_private")
 
 target_include_directories(prescience_helper_lib PUBLIC
   "include_public")

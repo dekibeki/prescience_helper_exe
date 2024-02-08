@@ -1,9 +1,9 @@
 #pragma once
 
-#include <prescience_helper_lib/sim.hpp>
+#include <prescience_helper/sim.hpp>
 #include <clogparser/types.hpp>
 
-namespace prescience_helper_lib::internal {
+namespace prescience_helper::sim {
   constexpr double EBON_MIGHT_PRIMARY_SHARE = 0.1;
   constexpr double SHIFTING_SANDS_MASTERY_MULTIPLER = 0.34;
   constexpr double PRESCIENCE_CRIT_AMOUNT = 0.03;

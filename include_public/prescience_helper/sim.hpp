@@ -8,7 +8,7 @@
 #include <cassert>
 #include <string_view>
 
-namespace prescience_helper_lib::internal {
+namespace prescience_helper::sim {
   struct Target_state;
   struct Player_state;
 

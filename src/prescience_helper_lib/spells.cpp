@@ -1,13 +1,13 @@
-#include <prescience_helper_lib/spells.hpp>
+#include <prescience_helper/sim/spells.hpp>
 
-namespace internal = prescience_helper_lib::internal;
+namespace sim = prescience_helper::sim;
 
-internal::Spell_result internal::calc_spell(bool crit, Player_state const& aug, Player_state const& caster, Target_state const& castee, Spell_scaling const& scaling) {
+sim::Spell_result sim::calc_spell(bool crit, Player_state const& aug, Player_state const& caster, Target_state const& castee, Spell_scaling const& scaling) {
   Spell_result res;
 
   for (Buffs i = Buffs::none; i < Buffs::COMBINATIONS; ++i) {
     Combat_stats stats = caster.current_stats;
-    if ((i & Buffs::ebon_might) != internal::Buffs::none) {
+    if ((i & Buffs::ebon_might) != sim::Buffs::none) {
       caster.scaling.add_primary(stats, EBON_MIGHT_PRIMARY_SHARE * aug.current_stats[Combat_stat::primary]);
     }
     if ((i & Buffs::shifting_sands) != Buffs::none) {
@@ -29,7 +29,7 @@ internal::Spell_result internal::calc_spell(bool crit, Player_state const& aug, 
 
     if (crit) {
       res[i] *= amp.crit_amp * 2;
-    } else if (1 - stats[Combat_stat::crit] > 0 && (i & internal::Buffs::prescience) != internal::Buffs::none) {
+    } else if (1 - stats[Combat_stat::crit] > 0 && (i & sim::Buffs::prescience) != sim::Buffs::none) {
       const auto helpful_amount = std::min(PRESCIENCE_CRIT_AMOUNT, 1 - stats[Combat_stat::crit]);
       res[i] *= amp.crit_amp * (1 + helpful_amount / (1 - stats[Combat_stat::crit]));
     }
@@ -39,7 +39,7 @@ internal::Spell_result internal::calc_spell(bool crit, Player_state const& aug, 
 }
 
 
-internal::Spell_result internal::unknown_spell() {
+sim::Spell_result sim::unknown_spell() {
   Spell_result returning;
   for (Buffs i = Buffs::none; i < Buffs::COMBINATIONS; ++i) {
     returning[i] = 0;

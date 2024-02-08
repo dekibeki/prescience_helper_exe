@@ -1,4 +1,4 @@
-#include <prescience_helper_lib/dbc_constants.hpp>
+#include <prescience_helper/sim/dbc_constants.hpp>
 
 #include <array>
 #include <cassert>
@@ -29,7 +29,7 @@ namespace {
   };
 }
 
-double prescience_helper_lib::internal::dbc_constants::scale_rating(double in) noexcept {
+double prescience_helper::sim::dbc_constants::scale_rating(double in) noexcept {
   for (auto const& scaling : scalings) {
     if (scaling.orig_min <= in && in <= scaling.orig_max) {
       return scaling.use(in);

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace prescience_helper_lib::internal {
+namespace prescience_helper::sim {
   namespace dbc_constants {
     constexpr double rating_per_crit = 179.995151;
     constexpr double rating_per_mastery = 179.995151;

@@ -1,6 +1,4 @@
 #include <prescience_helper/ingest.hpp>
-#include <prescience_helper_lib/sim.hpp>
-#include <prescience_helper_lib/spells.hpp>
 #include <clogparser/parser.hpp>
 #include <cassert>
 #include <cstdint>

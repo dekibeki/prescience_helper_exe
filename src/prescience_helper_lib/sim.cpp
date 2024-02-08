@@ -1,43 +1,43 @@
-#include <prescience_helper_lib/sim.hpp>
-#include <prescience_helper_lib/dbc_constants.hpp>
-#include <prescience_helper_lib/spells.hpp>
-#include <prescience_helper_lib/specs/aug.hpp>
+#include <prescience_helper/sim.hpp>
+#include <prescience_helper/sim/dbc_constants.hpp>
+#include <prescience_helper/sim/spells.hpp>
+#include <prescience_helper/sim/specs/aug.hpp>
 #include <cassert>
 
-namespace internal = prescience_helper_lib::internal;
+namespace sim = prescience_helper::sim;
 
 namespace {
-  constexpr internal::Player_scaling NYI_class_block{
+  constexpr sim::Player_scaling NYI_class_block{
     clogparser::Attribute_rating::strength,
     0, 0,
     0, 0
   };
 
-  struct Nyi_spec final : internal::Player_state {
+  struct Nyi_spec final : sim::Player_state {
     Nyi_spec(clogparser::events::Combatant_info const& c_info) :
       Player_state(c_info, NYI_class_block) {
 
     }
 
-    internal::Spell_result impact(std::uint64_t spell_id, bool crit, Player_state const& aug, Target_state const& target) const override {
-      return internal::unknown_spell();
+    sim::Spell_result impact(std::uint64_t spell_id, bool crit, Player_state const& aug, Target_state const& target) const override {
+      return sim::unknown_spell();
     }
-    internal::Spell_result tick(std::uint64_t spell_id, bool crit, Player_state const& aug, Target_state const& target) const override {
-      return internal::unknown_spell();
+    sim::Spell_result tick(std::uint64_t spell_id, bool crit, Player_state const& aug, Target_state const& target) const override {
+      return sim::unknown_spell();
     }
   };
 
-  std::unique_ptr<internal::Player_state> create_nyi(clogparser::events::Combatant_info const& c_info) {
+  std::unique_ptr<sim::Player_state> create_nyi(clogparser::events::Combatant_info const& c_info) {
     return std::make_unique<Nyi_spec>(c_info);
   }
 }
 
-prescience_helper_lib::internal::Target_state::Target_state(std::string_view guid) :
+sim::Target_state::Target_state(std::string_view guid) :
   guid(guid) {
 
 }
 
-void internal::Target_state::aura_applied(std::uint64_t spell_id, std::optional<std::uint64_t> remaining_points) {
+void sim::Target_state::aura_applied(std::uint64_t spell_id, std::optional<std::uint64_t> remaining_points) {
   switch (spell_id) {
   case 113746: //mystic touch
     phys_damage_taken.normal_amp *= 0.05;
@@ -47,12 +47,12 @@ void internal::Target_state::aura_applied(std::uint64_t spell_id, std::optional<
     break;
   }
 }
-void internal::Target_state::aura_removed(std::uint64_t spell_id) {
+void sim::Target_state::aura_removed(std::uint64_t spell_id) {
   switch (spell_id) {
   }
 }
 
-void prescience_helper_lib::internal::Player_scaling::add_primary(Combat_stats& to, double amount) const noexcept {
+void sim::Player_scaling::add_primary(Combat_stats& to, double amount) const noexcept {
   const auto adding_primary = amount * primary_scaling;
   to[Combat_stat::primary] += adding_primary;
   const auto adding_sp = sp_per_primary * adding_primary * sp_scaling;
@@ -63,19 +63,19 @@ void prescience_helper_lib::internal::Player_scaling::add_primary(Combat_stats& 
   to[Combat_stat::spell_power] += sp_per_ap * adding_ap * sp_scaling;
 }
 
-void prescience_helper_lib::internal::Player_scaling::add_sp_scaling(Combat_stats& to, double amount) noexcept {
+void sim::Player_scaling::add_sp_scaling(Combat_stats& to, double amount) noexcept {
   const auto new_scaling = sp_scaling + amount;
   to[Combat_stat::spell_power] *= new_scaling / sp_scaling;
   sp_scaling = new_scaling;
 }
 
-void prescience_helper_lib::internal::Player_scaling::add_ap_scaling(Combat_stats& to, double amount) noexcept {
+void sim::Player_scaling::add_ap_scaling(Combat_stats& to, double amount) noexcept {
   const auto new_scaling = ap_scaling + amount;
   to[Combat_stat::spell_power] *= new_scaling / ap_scaling;
   ap_scaling = new_scaling;
 }
 
-std::unique_ptr<prescience_helper_lib::internal::Player_state> prescience_helper_lib::internal::Player_state::create(clogparser::events::Combatant_info const& c_info) {
+std::unique_ptr<sim::Player_state> sim::Player_state::create(clogparser::events::Combatant_info const& c_info) {
   switch (c_info.current_spec_id) {
   case clogparser::SpecId::dk_blood: return create_nyi(c_info);
   case clogparser::SpecId::dk_frost: return create_nyi(c_info);
@@ -147,7 +147,7 @@ std::unique_ptr<prescience_helper_lib::internal::Player_state> prescience_helper
   }
 }
 
-prescience_helper_lib::internal::Player_state::Player_state(clogparser::events::Combatant_info const& info, Player_scaling const& player_scaling) :
+sim::Player_state::Player_state(clogparser::events::Combatant_info const& info, Player_scaling const& player_scaling) :
   Target_state(info.guid),
   spec(info.current_spec_id),
   scaling(player_scaling),
@@ -165,7 +165,7 @@ prescience_helper_lib::internal::Player_state::Player_state(clogparser::events::
     dbc_constants::scale_rating(info.stats[clogparser::Attribute_rating::versatility_damage_done] / dbc_constants::rating_per_vers_damage) / 100; //div by 100 to convert to [0,1]
 }
 
-void internal::Player_state::aura_applied(std::uint64_t spell_id, std::optional<std::uint64_t> remaining_points) {
+void sim::Player_state::aura_applied(std::uint64_t spell_id, std::optional<std::uint64_t> remaining_points) {
   switch (spell_id) {
   case 1126: //mark of the wild
     current_stats[Combat_stat::vers] += 0.03; 
@@ -182,6 +182,9 @@ void internal::Player_state::aura_applied(std::uint64_t spell_id, std::optional<
     break;
   }
 }
-void internal::Player_state::aura_removed(std::uint64_t spell_id) {
-
+void sim::Player_state::aura_removed(std::uint64_t spell_id) {
+  switch (spell_id) {
+  default:
+    Target_state::aura_removed(spell_id);
+  }
 }
