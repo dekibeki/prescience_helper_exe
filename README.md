@@ -18,7 +18,7 @@ The UI may start smaller than necessary to show all controls, please resize it s
 
 1. Use this button to select where your logs are located
 2. This text shows you the currently selected location that is searched for logs
-3. This is used to specify the minimum number of players to have as alternatives for each time. For example, if this value is 8, the best 8 choices for prescience will be known at any time. In an ideal world you would only need 4, but sometimes arms warriors die.
+3. This is used to specify size of the window we aggregate damage across. A smaller window is more accurate, but leads to more jumpy behaviour, slower computation, and larger data sizes.
 4. Select the encounter difficulty
 5. Select your encounter. This is populated from encounters found in your logs. If you don't have logs for a particular encounter, they won't be in the drop down selector.
 6. Paste the output string of the addon into here
