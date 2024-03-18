@@ -1,0 +1,2 @@
+add int modifiers to aug
+other class modules
